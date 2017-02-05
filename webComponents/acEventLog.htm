@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>Event Log</title>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Global/common.js"></script>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Global/uicommon.js"></script>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Grid/component.js"></script>
+		<script>
+			var appcentral = window.opener;
+			document.writeln(appcentral.getSkin());
+			
+			function initPage()
+			{	
+				addGridE();
+				update(appcentral.lastEvent);
+			}
+			
+			var gridE = new Object();
+			function addGridE()
+			{
+				gridE = gridNew("gridE", appcentral.skinName, document.getElementById("divEvents"));
+				gridE.rowClick = rowClick;
+				gridE.createColumn("ccol0", "Num", null, null, true);
+				gridE.createColumn("Type", "Type", null, 20, null);
+				gridE.createColumn("Event", "Event", null, 150, null);
+				gridE.createColumn("Data", "Data", null, 400, null);
+			}
+				
+			rowCount = 0;			
+			function update(logObj)
+			{
+				var cellArray = new Array();
+				if (logObj.type.toUpperCase() == "UPDATE")
+					cellArray[0] = gridE.createCell("r1cell1", " <img src='../webImages/messages.gif'> ", logObj.type, null, null, null);
+				else if (logObj.type.toUpperCase() == "HYPERLINK")
+				    cellArray[0] = gridE.createCell("r1cell1", " <img src='../webImages/hyperlink.gif'> ", logObj.type, null, null, null);
+				else if (logObj.type.toUpperCase() == "TRAFFIC")
+					cellArray[0] = gridE.createCell("r1cell1", " <img src='../webImages/networksendreceive.gif'> ", logObj.type, null, null, null);
+				else if (logObj.type.toUpperCase() == "FAULT" || logObj.type.toUpperCase() == "FATAL")
+					cellArray[0] = gridE.createCell("r1cell1", " <img src='../webImages/networkerror.gif'> ", logObj.type, null, null, null);
+				else if (logObj.type.toUpperCase() == "INFO")
+					cellArray[0] = gridE.createCell("r1cell1", " <img src='../webImages/networkinfo.gif'> ", logObj.type, null, null, null);
+				else
+					cellArray[0] = gridE.createCell("r1cell1", logObj.type, logObj.type, null, null, null);
+				cellArray[1] = gridE.createCell("r1cell2", logObj.description, logObj.description, null, null, null);
+				cellArray[2] = gridE.createCell("r1cell3", logObj.data, logObj.data, null, null, null);
+				gridE.createRow("uoRow" + rowCount, cellArray);
+				rowCount++;
+			}
+			
+			function rowClick()
+			{
+				
+			}
+			
+		</script>
+	</head>
+	<body onload="initPage()" class="control" style="overflow:auto;margin-bottom:0px;margin-right:0px;margin-top:-1px" UNSELECTABLE="on" ondragstart="return false;" class="control">
+		<div id="divEvents" datatype="grid" style="BORDER-RIGHT: 1px inset; BORDER-TOP: 1px inset; BORDER-LEFT: 1px inset; WIDTH: 100%; height: 100%;BORDER-BOTTOM: 1px inset; BACKGROUND-COLOR: white">
+		</div>
+	</body>
+</html>
+
+ 
+ 

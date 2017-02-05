@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>eXpression Admin</title>
+<script language="javascript" src="../../../../jsObjects/jsUI-Global/common.js"></script>
+<script language="javascript" src="../../../../jsObjects/jsUI-Global/uiCommon.js"></script>
+<script language="javascript" src="../../../../jsObjects/jsUI-taskbar/component.js"></script>
+<script>
+	var appcentral = window.top;
+	var mybar = new Object();
+
+	function initPage()
+	{	
+		mybar = taskbarNew("mybar", appcentral.skinName, document.getElementById("cellTaskbar"));
+		mybar.taskClick = tskClick;
+		setTimeout("appcentral.webservice.List('AppCentral', 'tasks', appcentral.currProfile, fillTaskbar)", 100);
+	}	
+	
+	function update(obj)
+	{
+
+	}
+
+	var taskArray = new Array();
+	function fillTaskbar(moduleList)
+	{		
+	    moduleList = appcentral.decodeResponse(moduleList);
+		if (document.all)
+		{
+			var xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
+			xmlDoc.async = false;
+			if (xmlDoc.loadXML(moduleList))
+			{
+				var items = xmlDoc.selectNodes("//Folders");
+				for (var i=0;i<items.length;i++)
+				{
+					var folderName = "folder" + replace(items[i].getAttribute("Name"), " ", "");
+					if (items[i].childNodes.length > 0)
+					    mybar.createFolder(folderName, items[i].getAttribute("Name"));
+					var item = items[i].childNodes;
+					for (var m=0;m<item.length;m++)
+					{
+						mybar.createTask("../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src"), item[m].getAttribute("Name"), "../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("largeIcon"), folderName);
+						var taskObj = new Object();
+						taskObj.src = "../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src");
+						taskObj.folder = "../" + item[m].getAttribute("Folder");
+						taskObj.name = item[m].getAttribute("Name");
+						taskObj.largeIcon = item[m].getAttribute("largeIcon");
+						taskObj.smallIcon = item[m].getAttribute("smallIcon");
+						taskArray[taskArray.length] = taskObj;
+					}
+				}
+			}
+			else
+			{
+				alert ("Could not load modules");
+			}
+		}
+		else
+		{
+			xmlParser = new DOMParser();
+			xmlDoc = xmlParser.parseFromString(moduleList, 'text/xml');
+			items = xmlDoc.getElementsByTagName("Folders");
+			for (var e=0;e<items.length;e++)
+			{
+				var folderName = "folder" + replace(items[e].getAttribute("Name"), " ", "");
+				var item = items[e].childNodes;
+				if (item.length > 0)
+					mybar.createFolder(folderName, items[e].getAttribute("Name"));
+				for (var m=0;m<item.length;m++)
+				{
+					try
+					{
+					mybar.createTask("../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src"), item[m].getAttribute("Name"), "../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("largeIcon"), folderName);
+					var taskObj = new Object();
+					taskObj.src = "../" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src");
+					taskObj.folder = "../" + item[m].getAttribute("Folder");
+					taskObj.name = item[m].getAttribute("Name");
+					taskObj.largeIcon = item[m].getAttribute("largeIcon");
+					taskObj.smallIcon = item[m].getAttribute("smallIcon");
+					taskArray[taskArray.length] = taskObj;
+					}
+					catch(e)
+					{
+					}
+				}
+			}
+			setTimeout("doResize()", 1);
+		}
+	}
+	
+	function tskClick(src)
+	{
+		for (var t=0;t<taskArray.length;t++)
+		{
+			if (taskArray[t].src == src)
+				appcentral.changeView(src, taskArray[t].name);
+		}
+		
+	}
+	
+	function doResize()
+	{	
+		try
+		{
+			mybar.taskbarResize();
+		}
+		catch(e)
+		{
+			//
+		}
+	}
+</script>
+</head>
+<body onresize="doResize()" onload="initPage()" class="control"  topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0" >
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" ID="Table1">
+<tr>
+<td id="cellTaskbar" style="width:100%;height:100%;"></td>
+</tr></table>
+
+
+</body>
+</html>
+ 
+ 

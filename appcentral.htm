@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>AppCentral</title>
+<script language="javascript" src="../../jsObjects/jsUI-Global/common.js"></script>
+<script language="javascript" src="../../jsObjects/jsUI-Global/uiCommon.js"></script>
+<script language="javascript" src="../../jsObjects/jsDA-wsBind/component.js"></script>
+<script language="javascript" src="webComponents/container.js"></script>
+<script language="javascript" src="webComponents/service.js"></script>
+<script>
+window.queryString = getQueryString();
+window.currProfile = window.queryString.profile;
+window.rootDir = "";
+window.skinName = "absolute";
+document.writeln("<link type='text/css' rel='stylesheet' href='" + window.skinName + ".css'></link>")
+
+try
+{
+	window.debugMode = window.queryString.debugMode;
+}
+catch(e)
+{
+	window.debugMode = false;
+}
+for (var p in window.queryString)
+{
+	var name = p;
+	var value = window.queryString[p];
+	eval ("window." + name + "='" + value + "'");
+}
+
+initws();
+
+</script>
+</head>
+
+<frameset id="container" rows="26,*" framespacing="0" border="0" frameborder="0" onbeforeunload="containerCleanup()">
+	<frame name="toolbar" scrolling="no" noresize target="contents" src="webComponents/acToolbar.htm">
+	<frameset id="taskview" cols="110,*">
+		<frame name="taskbar" scrolling="no" target="taskbar" src="webComponents/acTaskbar.htm">
+		<frameset rows="0,*" id="main">
+			<frame name="picker" scrolling="no" src="webComponents/acBlank.htm">
+			<frame name="view" scrolling="yes" src="webComponents/acNone.htm">
+		</frameset>
+	</frameset>
+</frameset>
+
+</html>
+ 
+ 

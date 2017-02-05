@@ -1,0 +1,67 @@
+body
+{
+	font-family: Verdana; font-size: 11px;margin-top:0px;margin-left:0px;margin-right:0px;margin-bottom:0px;border-top:1px solid #FFFFFF;border-left:1px solid #FFFFFF;border-right:1px solid #9D9DA1;border-bottom:1px solid #9D9DA1;
+}
+.SLIP
+{
+	background-color: #FCFCFC;cursor:default; border: 1px outset;
+}
+.control
+{
+	background-color:#E0DFE3;	
+}
+.workspace
+{
+	background-color:#808080;
+}
+.outset
+{
+	background-color:#E0DFE3; border: 1px outset;
+}
+.inset
+{
+	background-color:#E0DFE3; border: 1px inset; 
+}
+.formpage
+{
+	BORDER-BOTTOM:0px solid #E0DFE3; BACKGROUND-COLOR:#F1F0F4; margin-left: 5px; margin-top:5px; margin-bottom: 5px;
+}
+table
+{
+	font-family: Verdana; font-size: 11px
+}
+td
+{
+	font-family: Verdana; font-size: 11px
+}
+h3
+{
+	font-family: Verdana; font-size: 12px; font-weight:bolder; margin-top:5px; margin-bottom:2px
+}
+select
+{
+	font-family:Arial;font-size: 11px;font-weight:400;
+}
+option
+{
+	font-family:Arial;font-size: 11px;font-weight:400;
+}
+textarea
+{
+	font-family:Arial;font-size: 12px;font-weight:400;
+}
+input
+{
+	vertical-align: middle;
+}
+.checkboxCaption
+{
+	font: bolder 7pt Arial;
+	color: #000;
+	letter-spacing: 1px;
+	margin-left: -4px;
+	vertical-align: top;
+}
+.ButtonOut	{ border: 1px solid #E0DFE3; }
+.ButtonOver	{ border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #9D9DA1; border-bottom: 1px solid #9D9DA1;}
+.ButtonDown	{ border-top: 1px solid #9D9DA1; border-left: 1px solid #9D9DA1; border-right: 1px solid #FFFFFF; border-bottom: 1px solid #FFFFFF; }

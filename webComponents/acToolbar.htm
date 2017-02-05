@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>Toolbar</title>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Global/common.js"></script>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Global/uicommon.js"></script>
+		<script language="javascript" src="../../../../jsObjects/jsUI-Toolbar/component.js"></script>
+		<script>
+			var appcentral = window.top;
+			document.writeln(appcentral.getSkin());
+			
+			var mytools = new Object();
+			function initPage()
+			{	
+				mytools = toolbarNew("mytools", appcentral.skinName, document.getElementById("acTools"));
+				mytools.itemClick = doClick;
+				mytools.createButton("tbShutdown", "Log out", "../webImages/shutdown-s.gif");
+				mytools.createButton("tbToggleTasks", "Show/Hide Taskbar", "../webImages/taskshide-s.gif");
+				mytools.createSeperator();
+				mytools.createButton("tbHelp", "About AppCentral", "../webImages/help-s.gif");
+			}
+							
+			function addToolbar(tbSrc, tbWidth)
+			{
+				if (document.getElementById("tools").innerHTML == "&nbsp;")
+					document.getElementById("tools").innerHTML = "";
+				var newTB = document.createElement("IFRAME");
+				newTB.width=tbWidth;
+				newTB.height="25px";
+				newTB.border = 0;
+				newTB.frameborder = 0;
+				newTB.style.backgroundColor = "transparent";
+				newTB.scrolling = "no";
+				newTB.src = tbSrc;
+				newTB.setAttribute("UNSELECTABLE", "on");
+				newTB.setAttribute("frameborder", "0");
+				document.getElementById("tools").appendChild(newTB);
+			}
+			
+			function clearToolbars()
+			{
+				document.getElementById("tools").innerHTML = "&nbsp;";
+			}
+			
+			function doClick(tbID)
+			{
+				switch (tbID)
+				{
+					case "tbShutdown":
+					{
+						appcentral.shutDown();
+						break;
+					}
+					case "tbToggleTasks":
+					{
+						appcentral.toggleFrame("taskbar");
+						break;
+					}
+					case "tbHelp":
+					{
+						appcentral.showInfo();
+						break;			
+					}
+					
+				}
+			}
+			function openModule(moduleName)
+			{
+				if (moduleName == null || moduleName == "" || moduleName == undefined)
+				{
+					document.getElementById("imgClose").src = "../webImages/close-disabled.gif";
+					document.getElementById("txtTitle").innerHTML = "AppCentral";
+				}
+				else
+				{
+					document.getElementById("imgClose").src = "../webImages/close.gif";
+					document.getElementById("txtTitle").innerHTML = "AppCentral :: " + moduleName;
+				}
+			}
+			function mOver(obj)
+			{
+				if (obj.src.indexOf("disabled") == -1)
+					obj.className = "ButtonOver";
+			}
+			function mOut(obj)
+			{
+				obj.className = "ButtonOut";
+			}
+			function mDown(obj)
+			{
+				if (obj.src.indexOf("disabled") == -1)
+					obj.className = "ButtonDown";
+			}
+			function mUp(obj)
+			{
+				if (obj.src.indexOf("disabled") == -1)
+					obj.className = "ButtonOver";
+			}
+			
+			var message = "";
+			var mt;
+			function update(obj)
+			{
+				document.getElementById("imgMessage").src = "../webImages/messages.gif";
+				clearTimeout(mt);
+				mt = setTimeout("document.getElementById('imgMessage').src = '../webImages/disabled.gif';", 3000)
+				message = obj;
+			}
+			
+			var nt;
+			function networkStatus(status)
+			{
+				document.getElementById("imgNetwork").src = "../webImages/network" + status + ".gif";
+				clearTimeout(nt);
+				if (status.toLowerCase() == "receive")
+				{
+					nt = setTimeout("document.getElementById('imgNetwork').src = '../webImages/network.gif';", 1000)
+				}
+			}
+			
+		</script>
+	</head>
+	<body onload="initPage()" class="control" style="scroll:no;margin-bottom:0px;margin-right:0px;margin-top:-1px" UNSELECTABLE="on" ondragstart="return false;" class="control" onscroll="window.scrollTo(0,0);" oncontextmenu="return false;">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%" style="margin-top:0px">
+			<tr>
+				<td id="acTools" style="width:80px"></td>
+				<td id="tools">&nbsp;</td>
+				<td align="right" nowrap style="width:300px" height="100%" valign=middle style="font-size:12px;padding-bottom:2px;padding-right:3px">
+					<img id="imgMessage" src="../webImages/disabled.gif" align="absmiddle" class="ButtonOut" onmouseover="mOver(this)" onmouseout="mOut(this)" onmousedown="mDown(this)" onmouseup="mUp(this)" onclick="if(this.src.indexOf('disabled') == -1) {appcentral.showEventWin()}">
+					<img id="imgNetwork" src="../webImages/network.gif" align="absmiddle" class="ButtonOut" onmouseover="mOver(this)" onmouseout="mOut(this)" onmousedown="mDown(this)" onmouseup="mUp(this)" onclick="appcentral.showEventWin()">
+					<img src="../webImages/handle.gif" align="absmiddle">
+					<img src="../webImages/appcentral-s.gif" align="absmiddle" id="imgIcon"> <b><span id="txtTitle">AppCentral</span></b>
+					<img id="imgClose" src="../webImages/close-disabled.gif" align="absmiddle" class="ButtonOut" onmouseover="mOver(this)" onmouseout="mOut(this)" onmousedown="mDown(this)" onmouseup="mUp(this)" onclick="appcentral.changeView()">
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
+
+ 
+ 

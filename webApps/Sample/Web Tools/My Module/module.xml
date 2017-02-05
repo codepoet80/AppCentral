@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<module>
+  <identity smallIcon="AppCentral.gif" largeIcon="AppCentral.gif" name="Google" description="Any web app can be loaded into the container" src="default.htm"/>
+</module>

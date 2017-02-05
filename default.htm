@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>AppCentral Launcher</title>
+<link type="text/css" rel="stylesheet" href="default.css"></link>
+<script language="javascript" src="../../jsObjects/jsUI-Global/common.js"></script>
+<script language="javascript" src="../../jsObjects/jsUI-Global/uiCommon.js"></script>
+<script language="javascript" src="../../jsObjects/jsDA-wsBind/component.js"></script>
+<script>
+	var myws = new Object();
+	var wspath;
+	function initPage()
+	{	
+		initws();
+	}
+	
+	function initws()
+	{
+		//try
+		//{
+			wspath = "appcentralservice.asmx";
+			myws = wsbindNew("myws", wspath);
+			if (!myws)
+				alert ("Unable to bind to a remote webservice (the webservice host is different than this page host).\nIf your sure you want to allow this interaction, please make the appropriate security setting changes in your browser.");
+			else
+			{
+			    var moduleList = myws.List("AppCentral", "PROFILES", "", fillTaskbar);
+				//var moduleList = myws.listProfiles(fillTaskbar);
+			}
+		//}
+		//catch(e)
+		//{
+			//alert (e.description);
+			//alert ("Your browser is not capable of loading the modules");
+		//}
+	}
+	
+	var taskArray = new Array();
+	function fillTaskbar(moduleList)
+	{		
+	    moduleList = decodeResponse(moduleList);
+		if (document.all)
+		{
+			var xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
+			xmlDoc.async = false;
+			if (xmlDoc.loadXML(moduleList))
+			{
+				var items = xmlDoc.selectNodes("//Profile");
+				for (var m=0;m<items.length;m++)
+				{
+					//mybar.createTask("modules/" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src"), item[m].getAttribute("Name"), "modules/" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("largeIcon"), folderName);
+					var taskObj = new Object();
+					taskObj.name = items[m].getAttribute("Name");
+					taskObj.folder = items[m].getAttribute("Folder");
+					taskObj.largeIcon = items[m].getAttribute("largeIcon")
+					taskObj.smallIcon = items[m].getAttribute("smallIcon")
+					taskArray[taskArray.length] = taskObj;
+					addApp(taskObj);
+				}
+			}
+			else
+			{
+				alert ("Could not load profiles");
+			}
+		}
+		else
+		{
+			xmlParser = new DOMParser();
+			xmlDoc = xmlParser.parseFromString(moduleList, 'text/xml');
+			items = xmlDoc.getElementsByTagName("Profile");
+			for (var m=0;m<items.length;m++)
+			{
+				//mybar.createTask("modules/" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("Src"), item[m].getAttribute("Name"), "modules/" + item[m].getAttribute("Folder") + "/" + item[m].getAttribute("largeIcon"), folderName);
+				var taskObj = new Object();
+				taskObj.name = items[m].getAttribute("Name");
+				taskObj.folder = items[m].getAttribute("Folder");
+				taskObj.largeIcon = items[m].getAttribute("largeIcon")
+				taskObj.smallIcon = items[m].getAttribute("smallIcon")
+				taskArray[taskArray.length] = taskObj;
+				addApp(taskObj);
+			}
+		}
+	}
+	
+	function addApp(profile)
+	{
+		var listElem = document.getElementById("lstProfiles");
+		var newWidth = listElem.style.width;
+		newWidth = replace(newWidth, "px", "") * 1;
+		newWidth = newWidth - 2
+		if (browser == "MOZ")
+			newWidth = newWidth - 5;
+		var newProfile = document.createElement("div");
+		newProfile.id = profile.folder;
+		newProfile.style.width = newWidth;
+		newProfile.style.padding = "3px";
+		newProfile.className = "listOut";
+		newProfile.onclick = doClick;
+		newProfile.innerHTML = "<img src='" + profile.folder + "/" + profile.largeIcon + "' align='absmiddle'> " + profile.name;
+		document.getElementById("lstProfiles").appendChild(newProfile);
+	}
+	
+	var currProfile;
+	function doClick(e)
+	{
+		if (document.all)
+		{
+			e = window.event;
+			target = e.srcElement;
+		}
+		else
+			target = e.target;
+		if (target.tagName == "IMG")
+			target = target.parentNode;
+		for (var i=0;i<target.parentNode.childNodes.length;i++)
+		{
+			target.parentNode.childNodes[i].className = "listOut";
+		}
+		target.className = "listOver";
+		currProfile = target.id;
+	}
+	
+	function doLaunch()
+	{
+		if (currProfile != null && currProfile != "" && currProfile != undefined)
+		{
+			currLoc = document.location + "";
+			currLoc = replace(currLoc, "default.htm", "");
+			if (currLoc.indexOf("?") == -1)
+			    document.location = currLoc + "appcentral.htm?profile=" + currProfile;
+		    else
+		    {
+		        currLoc = currLoc.split("?");
+		        currLoc = currLoc[0] + "appcentral.htm?" + currLoc[1] + "&profile=" + currProfile;
+		        document.location = currLoc;
+		    }
+		}
+	}
+	
+	function decodeResponse(responseText, forOutput)
+    {
+	    var logObj = new Object();
+	    logObj.type = "TRAFFIC";
+	    logObj.description = "Response";
+	    logObj.data = responseText;
+	    var response = "";
+	    try
+	    {
+		    var findNode = "";
+		    if (responseText.indexOf("SupportResult") != -1)
+			    findNode = "SupportResult";
+		    if (responseText.indexOf("GetResult") != -1)
+			    findNode = "GetResult";
+		    if (responseText.indexOf("PostResult") != -1)
+			    findNode = "PostResult";
+            if (responseText.indexOf("ListResult") != -1)
+			    findNode = "ListResult";
+
+		    if (findNode == "")
+		        return handleMessages(responseText);
+    		
+		    if (browser == "IE" && findNode != "")
+		    {
+			    var xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
+			    xmlDoc.async = false;
+			    if (xmlDoc.loadXML(responseText))
+			    {
+				    findNode = "//" + findNode;
+				    response = xmlDoc.selectSingleNode(findNode);
+				    if (response != null && response.childNodes.length > 0)
+					    response = response.firstChild.xml;
+				    else
+					    response = "";
+			    }
+			    else
+				    response = "";
+		    }
+		    else if (browser == "MOZ" && findNode != "")
+		    {
+			    xmlParser = new DOMParser();
+			    xmlDoc = xmlParser.parseFromString(responseText, 'text/xml');
+			    var nodes = xmlDoc.getElementsByTagName(findNode);
+			    if (nodes.length > 0)
+			    {
+				    if (nodes[0].childNodes.length > 0)
+					    response = nodes[0].firstChild.nodeValue;
+				    else
+					    response = "";
+			    }
+			    else
+				    response = "";
+		    }
+		    response = xmlDecode(response);
+		    response = replace(response, "<?xml version=\"1.0\" encoding=\"utf-8\"?>", "");
+		    response = replace(response, "<?xml version=\"1.0\" encoding=\"utf-16\"?>", "");
+		    if (!forOutput)
+		    {
+		        response = replace(response, "&", "&amp;");
+		        response = replace(response, "#", "&#x0023;");
+		        response = replace(response, "$", "&#x0024;");
+		        response = replace(response, "%", "&#x0025;");
+		        response = replace(response, "@", "&#x0040;");
+		    }
+	    }
+	    catch(e)
+	    {
+		    return false;
+	    }
+	    return response;
+    }
+</script>
+<style>
+	.listOut { color: black; background-color: white ; }
+	.listOver { color: white; background-color: darkblue; }
+</style>
+</head>
+<body onload="initPage()" style="background-color:gray">
+
+<table width="100%" height="100%" border="0"><tr><td width="100%" height="100%" align="center" valign="middle">
+	<table style="width:450px;height=350px;border:1px solid black;background-color:buttonface">
+	<tr>
+		<td colspan="2" align="center" style="background-color:white;border-bottom:8px solid darkblue;height:110px;">
+			<span style="font-family:arial; font-weight:bold; font-size: 26px"><img src="webimages/appcentral.gif" align="absmiddle"> AppCentral</span>
+		</td>
+	</tr>
+	<tr>
+		<td style="margin:0px; padding-left: 15px; height:190px">
+		<b>Select an application...</b><br/><br/>
+			<div class="inset" id="lstProfiles" style="background-color:white; height:115px; width:180px; overflow: auto; overflow-y:scroll; overflow-x:hidden" >
+			
+			</div>
+		</td>
+		<td valign="bottom" align="right" style="padding-bottom: 20px; padding-right: 15px">
+			<input type="button" value="Launch" onclick="doLaunch()">
+		</td>
+	</tr>
+	</table>
+</td></tr></table>
+
+</body>
+</html>
+
+ 
+ 

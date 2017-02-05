@@ -1,0 +1,63 @@
+body
+{
+	font-family: Verdana; font-size: 11px;background-color:#f2f2f2;margin-top:0px;margin-left:0px;margin-right:0px;margin-bottom:0px;border-top:1px solid threedhighlight;border-left:1px solid threedhighlight;border-right:1px solid threedshadow;border-bottom:1px solid threedshadow;
+}
+.control
+{
+	background-color:buttonface;	
+}
+.workspace
+{
+	background-color:#808080;
+}
+.outset
+{
+	background-color:buttonface; border: 1px outset;
+}
+.inset
+{
+	background-color:buttonface; border: 1px inset; 
+}
+.formpage
+{
+	BORDER-BOTTOM:0px solid buttonface; BACKGROUND-COLOR:#f2f2f2; margin-left: 5px; margin-top:5px; margin-bottom: 5px;
+}
+table
+{
+	font-family: Verdana; font-size: 11px
+}
+td
+{
+	font-family: Verdana; font-size: 11px
+}
+h3
+{
+	font-family: Verdana; font-size: 12px; font-weight:bolder; margin-top:5px; margin-bottom:2px
+}
+select
+{
+	font-family:Arial;font-size: 11px;font-weight:400;
+}
+option
+{
+	font-family:Arial;font-size: 11px;font-weight:400;
+}
+textarea
+{
+	font-family:Arial;font-size: 12px;font-weight:400;
+}
+input
+{
+	vertical-align: middle;
+}
+.checkboxCaption
+{
+	font: bolder 7pt Arial;
+	color: #000;
+	letter-spacing: 1px;
+	margin-left: -4px;
+	vertical-align: top;
+}
+.ButtonOut	{ border: 1px solid buttonface; }
+.ButtonOver	{ border-top: 1px solid threedhighlight; border-left: 1px solid threedhighlight; border-right: 1px solid threedshadow; border-bottom: 1px solid threedshadow;}
+.ButtonDown	{ border-top: 1px solid threedshadow; border-left: 1px solid threedshadow; border-right: 1px solid threedhighlight; border-bottom: 1px solid threedhighlight; }
